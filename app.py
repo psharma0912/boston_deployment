@@ -5,8 +5,10 @@ import pandas as pd
 
 app=Flask(__name__)#defining the flask app
 
-#Load the model
-regmodel=pickle.load(open('boston_reg.pkl', 'rb'))
+
+## Load the model
+regmodel=pickle.load(open('boston_reg.pkl','rb'))
+scalar=pickle.load(open('scaling.pkl','rb'))
 
 @app.route('/')
 def home():
@@ -17,7 +19,7 @@ def predict_api():
     data=request.json['data']
     print(data)
     print(np.array(list(data.values())).reshape(1,-1))
-    new_data=Scaler.transform(np.array(list(data.values())).reshape(1,-1))
+    new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
     output=regmodel.predict(new_data)
     print(output[0])
     return jsonify(output[0])
